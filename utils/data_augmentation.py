@@ -6,7 +6,7 @@ import cv2
 
 class AugmentData:
 
-    # TODO adjustment of coordinates of fiducial points
+    # TODO adjustment of coordinates of fiduciary points
 
     @classmethod
     def flip_image(cls, image: Image) -> Image:
