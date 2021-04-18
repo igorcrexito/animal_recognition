@@ -1,5 +1,5 @@
 # Press the green button in the gutter to run the script.
-from animal_recognition.utils.read_dataset import ImageDataset
+from utils.read_dataset import ImageDataset
 
 if __name__ == '__main__':
     image_dataset = ImageDataset(dataset_path='animal_recognition/image_dataset/',
