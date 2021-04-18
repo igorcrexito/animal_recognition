@@ -5,6 +5,8 @@ from typing import Union
 import numpy as np
 import IPython
 
+from utils.data_augmentation import AugmentData
+
 
 class ImageDataset:
 
@@ -15,9 +17,10 @@ class ImageDataset:
 
     def read_images(self):
 
-        #assembling a list of images
+        # assembling a list of images
         image_list = []
         fiducial_points = []
+        image_class_list = []
 
         # we must resize the images and their corresponding coordinates
         image_size = (self.image_dimensions['width'], self.image_dimensions['height'])
@@ -39,26 +42,36 @@ class ImageDataset:
 
                 image_list.append(image)
                 fiducial_points.append(pts_vector)
+                image_class_list.append(image_name[14:].split('_')[0])
+
+                # insert augmented images
+                flipped_tuple = AugmentData.flip_image(image=image, pts_list=pts_vector.copy())
+                translated_tuple = AugmentData.translate_image(image=image, pts_list=pts_vector.copy())
+
+                image_list.append(flipped_tuple[0])
+                image_class_list.append(image_name[14:].split('_')[0])
+                image_list.append(translated_tuple[0])
+                image_class_list.append(image_name[14:].split('_')[0])
+                fiducial_points.append(flipped_tuple[1])
+                fiducial_points.append(translated_tuple[1])
 
             except:
                 print('invalid image')
 
-        return image_list, fiducial_points
-
-
+        return image_list, fiducial_points, image_class_list
 
     def adjust_fiducial_points(self, pts_vector, dx_coefficient, dy_coefficient):
-        #d = ImageDraw.Draw(image, 'RGBA')
+        # d = ImageDraw.Draw(image, 'RGBA')
         for index, point in enumerate(pts_vector):
             pts_vector[index][0] = round(point[0] * dx_coefficient)
             pts_vector[index][1] = round(point[1] * dy_coefficient)
 
-            #shape = [(pts_vector[index][0], pts_vector[index][1]),
+            # shape = [(pts_vector[index][0], pts_vector[index][1]),
             #         (pts_vector[index][0] + 10, pts_vector[index][1] + 10)]
 
-            #d.ellipse(shape, fill="yellow", outline="red")
+            # d.ellipse(shape, fill="yellow", outline="red")
 
-        #image.show()
+        # image.show()
         return pts_vector
 
     def read_pts(self, filename: Union[str, bytes, Path]) -> np.ndarray:
