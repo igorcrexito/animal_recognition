@@ -61,17 +61,17 @@ class ImageDataset:
         return image_list, fiducial_points, image_class_list
 
     def adjust_fiducial_points(self, pts_vector, dx_coefficient, dy_coefficient):
-        # d = ImageDraw.Draw(image, 'RGBA')
+        #d = ImageDraw.Draw(image, 'RGBA')
         for index, point in enumerate(pts_vector):
             pts_vector[index][0] = round(point[0] * dx_coefficient)
             pts_vector[index][1] = round(point[1] * dy_coefficient)
 
-            # shape = [(pts_vector[index][0], pts_vector[index][1]),
-            #         (pts_vector[index][0] + 10, pts_vector[index][1] + 10)]
+            #shape = [(pts_vector[index][0], pts_vector[index][1]),
+            #        (pts_vector[index][0] + 10, pts_vector[index][1] + 10)]
 
-            # d.ellipse(shape, fill="yellow", outline="red")
+            #d.ellipse(shape, fill="yellow", outline="red")
 
-        # image.show()
+        #image.show()
         return pts_vector
 
     def read_pts(self, filename: Union[str, bytes, Path]) -> np.ndarray:
