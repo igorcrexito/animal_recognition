@@ -6,16 +6,18 @@ import cv2
 
 class AugmentData:
 
-    # TODO adjustment of coordinates of fiducial points
-
     @classmethod
-    def flip_image(cls, image: Image) -> Image:
+    def flip_image(cls, image: Image, pts_list: list) -> (Image, list):
         image = image.transpose(Image.FLIP_LEFT_RIGHT)
 
-        return image
+        for index, point in enumerate(pts_list):
+            pts_list[index][0] = image.size[0]-point[0]
+            pts_list[index][1] = point[1]
+
+        return image, pts_list
 
     @classmethod
-    def translate_image(cls, image: Image) -> Image:
+    def translate_image(cls, image: Image, pts_list: list) -> (Image, list):
         image = np.asarray(image)
 
         img_width = np.shape(image)[1]
@@ -29,10 +31,13 @@ class AugmentData:
 
         translation_matrix = np.float32([[1, 0, tx], [0, 1, ty]])
         image = cv2.warpAffine(image, translation_matrix, (img_width, img_height))
-
         image = Image.fromarray(image)
 
-        return image
+        for index, point in enumerate(pts_list):
+            pts_list[index][0] = point[0]+tx
+            pts_list[index][1] = point[1]+ty
+
+        return image, pts_list
 
     @classmethod
     def zooming(cls, image: Image) -> Image:
